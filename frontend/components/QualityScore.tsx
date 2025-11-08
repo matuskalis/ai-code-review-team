@@ -92,7 +92,7 @@ export default function QualityScore({ score }: QualityScoreProps) {
                 </svg>
                 <div className="flex flex-col items-center">
                   <CircularProgress
-                    value={score.projected_score}
+                    value={score.projected_score ?? 0}
                     max={100}
                     grade={score.projected_grade}
                     size={140}
