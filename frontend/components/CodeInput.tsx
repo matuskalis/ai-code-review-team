@@ -316,7 +316,8 @@ export default function CodeInput({
 
     try {
       // Connect to WebSocket
-      const ws = new WebSocket("ws://localhost:8000/ws/review");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "ws://localhost:8000";
+      const ws = new WebSocket(`${backendUrl}/ws/review`);
 
       ws.onopen = () => {
         // Send review request
