@@ -72,9 +72,9 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            "name": "CodeReview AI",
+            "name": "AskNim - AI Code Review",
             "applicationCategory": "DeveloperApplication",
-            "description": "AI-powered multi-agent code review system that analyzes code for security vulnerabilities, performance issues, and style problems. Features CWE tagging, Big-O analysis, and maintainability scoring.",
+            "description": "Meet Nim, your AI code review team leader. Nim orchestrates specialized AI agents to analyze code for security vulnerabilities, performance issues, and style problems. Features CWE tagging, Big-O analysis, and maintainability scoring.",
             "operatingSystem": "Web Browser",
             "offers": {
               "@type": "Offer",
@@ -100,7 +100,7 @@ export default function Home() {
             ],
             "provider": {
               "@type": "Organization",
-              "name": "AI Code Review Team"
+              "name": "AskNim"
             }
           })
         }}
@@ -119,7 +119,7 @@ export default function Home() {
                 "name": "How does multi-agent code review work?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Our multi-agent system uses specialized AI agents that each focus on a different aspect of code quality: Security Specialist detects vulnerabilities and CWE issues, Performance Specialist analyzes Big-O complexity and optimization opportunities, and Style & Maintainability Specialist evaluates code patterns and best practices. An orchestrator coordinates these agents to provide comprehensive analysis."
+                  "text": "Nim, our AI team leader, coordinates specialized AI agents that each focus on a different aspect of code quality: Security Specialist detects vulnerabilities and CWE issues, Performance Specialist analyzes Big-O complexity and optimization opportunities, and Style & Maintainability Specialist evaluates code patterns and best practices. Nim orchestrates these agents to provide comprehensive analysis."
                 }
               },
               {
@@ -127,7 +127,7 @@ export default function Home() {
                 "name": "What programming languages are supported?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "CodeReview AI currently supports Python, JavaScript, TypeScript, Java, Go, and Rust, with automatic language detection. We're continuously adding support for more languages based on user demand."
+                  "text": "AskNim currently supports Python, JavaScript, TypeScript, Java, Go, and Rust, with automatic language detection. We're continuously adding support for more languages based on user demand."
                 }
               },
               {
@@ -143,7 +143,7 @@ export default function Home() {
                 "name": "Can I integrate this with my CI/CD pipeline?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Yes! CodeReview AI integrates seamlessly with GitHub Actions, GitLab CI, Jenkins, and other popular CI/CD platforms. You can automate code reviews on every pull request to catch issues before they reach production."
+                  "text": "Yes! AskNim integrates seamlessly with GitHub Actions, GitLab CI, Jenkins, and other popular CI/CD platforms. You can automate code reviews on every pull request to catch issues before they reach production."
                 }
               },
               {
@@ -151,7 +151,7 @@ export default function Home() {
                 "name": "How is this different from ESLint or SonarQube?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Unlike rule-based tools, CodeReview AI uses specialized AI agents that collaborate to understand context and catch issues that single tools miss. We provide comprehensive coverage across security, performance, and style in a single analysis, with CWE tagging and Big-O complexity analysis that traditional linters don't offer."
+                  "text": "Unlike rule-based tools, AskNim uses Nim, an AI team leader, to coordinate specialized AI agents that collaborate to understand context and catch issues that single tools miss. We provide comprehensive coverage across security, performance, and style in a single analysis, with CWE tagging and Big-O complexity analysis that traditional linters don't offer."
                 }
               }
             ]
@@ -169,7 +169,7 @@ export default function Home() {
             <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
-            <span className="text-xl font-bold text-white">CodeReview AI</span>
+            <span className="text-xl font-bold text-white">AskNim</span>
           </div>
           <div className="flex items-center gap-6">
             <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">Docs</a>
@@ -193,15 +193,15 @@ export default function Home() {
           <div className="text-center mb-6 relative z-10">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight tracking-tight">
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                AI-Driven Multi-Agent Code Reviews
+                Meet Nim: Your AI Code Review Team Leader
               </span>
               <br />
-              <span className="text-2xl md:text-4xl text-slate-300">for Security and Performance</span>
+              <span className="text-2xl md:text-4xl text-slate-300">Leading expert agents for Security & Performance</span>
             </h1>
 
             {/* Tagline */}
             <p className="text-lg md:text-xl text-slate-400 mb-8 font-medium">
-              Review smarter. Deploy safer.
+              Nim orchestrates specialized AI agents to find what you miss.
             </p>
 
             {/* Primary CTA */}
@@ -275,7 +275,7 @@ export default function Home() {
           {/* Technical Differentiation Section */}
           <div className="max-w-5xl mx-auto mt-16 mb-12">
             <div className="glass-card rounded-2xl p-8 border border-slate-700/50">
-              <h3 className="text-center text-xl font-bold text-white mb-6">Multi-Agent Orchestration</h3>
+              <h3 className="text-center text-xl font-bold text-white mb-6">Nim's Multi-Agent Orchestration</h3>
 
               {/* Agent Flow Diagram */}
               <div className="flex items-center justify-center gap-4 mb-6 overflow-x-auto">
@@ -346,7 +346,7 @@ export default function Home() {
                       <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
                     </svg>
                   </div>
-                  <span className="text-xs text-purple-400 font-medium">Orchestrator</span>
+                  <span className="text-xs text-purple-400 font-medium">Nim (Leader)</span>
                 </div>
 
                 {/* Arrow */}
@@ -368,7 +368,7 @@ export default function Home() {
 
               {/* Differentiator Text */}
               <p className="text-center text-sm text-slate-400 leading-relaxed max-w-3xl mx-auto">
-                Unlike static analyzers, each agent specializes and collaborates, catching issues single models miss.
+                Nim coordinates specialized agents, each focused on security, performance, or style, catching issues that single tools miss.
               </p>
             </div>
           </div>
@@ -403,10 +403,10 @@ export default function Home() {
         <div className="max-w-5xl mx-auto mb-16">
           <div className="glass-card rounded-2xl p-8 border border-slate-700/50">
             <h3 className="text-center text-xl font-bold text-white mb-2">
-              Why Choose AI-Driven Multi-Agent Review?
+              Why Choose Nim's Multi-Agent Review?
             </h3>
             <p className="text-center text-sm text-slate-400 mb-8">
-              Unlike traditional static analyzers, our AI agents collaborate to catch what single tools miss
+              Nim leads specialized AI agents that collaborate to catch what single tools miss
             </p>
 
             {/* Comparison Table */}
@@ -418,7 +418,7 @@ export default function Home() {
                       Capability
                     </th>
                     <th className="text-center py-4 px-4 text-sm font-bold text-blue-400 uppercase tracking-wider">
-                      CodeReview AI
+                      AskNim
                     </th>
                     <th className="text-center py-4 px-4 text-sm font-bold text-slate-500 uppercase tracking-wider">
                       Static Analyzers
@@ -503,7 +503,7 @@ export default function Home() {
               Compare with Industry Tools
             </h3>
             <p className="text-center text-sm text-slate-400 mb-8">
-              See how CodeReview AI stacks up against traditional code analysis tools
+              See how AskNim stacks up against traditional code analysis tools
             </p>
 
             {/* Comparison Grid */}
@@ -535,7 +535,7 @@ export default function Home() {
                           </svg>
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-white">CodeReview AI</div>
+                          <div className="text-sm font-bold text-white">AskNim</div>
                           <div className="text-xs text-blue-400">This product</div>
                         </div>
                       </div>
@@ -692,7 +692,7 @@ jobs:
               Trusted by Engineering Teams
             </h3>
             <p className="text-sm text-slate-400">
-              See what developers are saying about CodeReview AI
+              See what developers are saying about AskNim
             </p>
           </div>
 
@@ -865,10 +865,10 @@ jobs:
                   <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
-                  <span className="text-lg font-bold text-white">CodeReview AI</span>
+                  <span className="text-lg font-bold text-white">AskNim</span>
                 </div>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  Enterprise-grade code analysis powered by specialized AI agents.
+                  Meet Nim: Your AI team leader for enterprise-grade code analysis.
                 </p>
               </div>
 
