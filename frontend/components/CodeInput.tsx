@@ -359,6 +359,25 @@ class UserService:
   },
 ];
 
+interface GitHubUser {
+  id: number;
+  login: string;
+  name: string;
+  avatar_url: string;
+  email: string;
+}
+
+interface GitHubRepo {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string;
+  private: boolean;
+  language: string;
+  updated_at: string;
+  default_branch: string;
+}
+
 export default function CodeInput({
   onReviewStart,
   onAgentUpdate,
@@ -372,6 +391,38 @@ export default function CodeInput({
   const [context, setContext] = useState("");
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
   const [manualLanguageChange, setManualLanguageChange] = useState(false);
+  const [githubUser, setGithubUser] = useState<GitHubUser | null>(null);
+  const [showRepoModal, setShowRepoModal] = useState(false);
+  const [repositories, setRepositories] = useState<GitHubRepo[]>([]);
+  const [loadingRepos, setLoadingRepos] = useState(false);
+
+  // Check for authenticated GitHub user on mount
+  useEffect(() => {
+    const checkAuth = () => {
+      const userCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('github_user='));
+
+      if (userCookie) {
+        try {
+          const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+          setGithubUser(userData);
+        } catch (e) {
+          console.error('Error parsing GitHub user cookie:', e);
+        }
+      }
+    };
+
+    checkAuth();
+
+    // Check for OAuth success in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('github_auth') === 'success') {
+      checkAuth();
+      // Clean up URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   // Auto-load demo when requested
   useEffect(() => {
@@ -417,6 +468,51 @@ export default function CodeInput({
     // Pick a truly random example
     const randomIndex = Math.floor(Math.random() * CODE_EXAMPLES.length);
     loadExample(randomIndex);
+  };
+
+  const handleGitHubSignIn = () => {
+    window.location.href = '/api/auth/github';
+  };
+
+  const handleGitHubSignOut = async () => {
+    // Clear cookies
+    document.cookie = 'github_access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = 'github_user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    setGithubUser(null);
+    setRepositories([]);
+  };
+
+  const handleImportFromGitHub = async () => {
+    setLoadingRepos(true);
+    try {
+      const response = await fetch('/api/github/repos');
+      if (response.ok) {
+        const repos = await response.json();
+        setRepositories(repos);
+        setShowRepoModal(true);
+      } else {
+        alert('Failed to load repositories. Please try signing in again.');
+      }
+    } catch (error) {
+      console.error('Error loading repositories:', error);
+      alert('Failed to load repositories');
+    } finally {
+      setLoadingRepos(false);
+    }
+  };
+
+  const handleRepoSelect = async (repo: GitHubRepo) => {
+    try {
+      // For now, we'll just show an alert. In the future, this could:
+      // 1. Show a file browser for the repo
+      // 2. Fetch file contents from GitHub API
+      // 3. Populate the code textarea
+      alert(`Selected: ${repo.full_name}\n\nFile browser coming soon! For now, you can manually paste code from your repository.`);
+      setShowRepoModal(false);
+    } catch (error) {
+      console.error('Error selecting repository:', error);
+      alert('Failed to load repository contents');
+    }
   };
 
   const handleSubmit = async () => {
@@ -601,21 +697,68 @@ export default function CodeInput({
             )}
           </button>
 
-          {/* GitHub Sign In Button */}
-          <button
-            onClick={() => {
-              // Placeholder for GitHub OAuth
-              alert("GitHub sign-in coming soon! This will enable saved reviews and history.");
-            }}
-            disabled={isReviewing}
-            className="w-full px-6 py-3 bg-slate-800/80 hover:bg-slate-700/80 disabled:bg-slate-800/50 text-white font-semibold rounded-xl transition-all duration-200 border border-slate-600/50 hover:border-slate-500 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-            <span>Sign in with GitHub</span>
-            <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-500/50 rounded text-xs text-blue-300">Soon</span>
-          </button>
+          {/* GitHub Integration */}
+          {!githubUser ? (
+            <button
+              onClick={handleGitHubSignIn}
+              disabled={isReviewing}
+              className="w-full px-6 py-3 bg-slate-800/80 hover:bg-slate-700/80 disabled:bg-slate-800/50 text-white font-semibold rounded-xl transition-all duration-200 border border-slate-600/50 hover:border-slate-500 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              <span>Sign in with GitHub</span>
+            </button>
+          ) : (
+            <div className="space-y-3">
+              {/* Authenticated User Info */}
+              <div className="flex items-center gap-3 px-4 py-3 bg-slate-800/60 rounded-xl border border-slate-600/50">
+                <img
+                  src={githubUser.avatar_url}
+                  alt={githubUser.login}
+                  className="w-10 h-10 rounded-full border-2 border-blue-500/50"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white truncate">
+                    {githubUser.name || githubUser.login}
+                  </p>
+                  <p className="text-xs text-slate-400 truncate">
+                    @{githubUser.login}
+                  </p>
+                </div>
+                <button
+                  onClick={handleGitHubSignOut}
+                  className="px-3 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700/80 rounded-lg transition-all"
+                  title="Sign out"
+                >
+                  Sign out
+                </button>
+              </div>
+
+              {/* Import from Repository Button */}
+              <button
+                onClick={handleImportFromGitHub}
+                disabled={isReviewing || loadingRepos}
+                className="w-full px-6 py-3 bg-gradient-to-r from-green-600/20 to-blue-600/20 hover:from-green-600/30 hover:to-blue-600/30 disabled:from-slate-800/50 disabled:to-slate-800/50 text-white font-semibold rounded-xl transition-all duration-200 border border-green-500/30 hover:border-green-500/50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              >
+                {loadingRepos ? (
+                  <>
+                    <svg className="w-5 h-5 animate-spin" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+                    </svg>
+                    <span>Loading repositories...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>Import from Repository</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
 
           {!code.trim() && !isReviewing && (
             <p className="text-xs text-slate-500 text-center mt-2">
@@ -624,6 +767,87 @@ export default function CodeInput({
           )}
         </div>
       </div>
+
+      {/* Repository Selection Modal */}
+      {showRepoModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="glass-card rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-slate-700">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-white">Select Repository</h3>
+                <button
+                  onClick={() => setShowRepoModal(false)}
+                  className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-all"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-slate-400 mt-1">
+                Choose a repository to import code from
+              </p>
+            </div>
+
+            {/* Repository List */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {repositories.length === 0 ? (
+                <div className="text-center py-12">
+                  <svg className="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                  <p className="text-slate-400">No repositories found</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {repositories.map((repo) => (
+                    <button
+                      key={repo.id}
+                      onClick={() => handleRepoSelect(repo)}
+                      className="w-full p-4 bg-slate-800/60 hover:bg-slate-700/60 rounded-xl border border-slate-600/50 hover:border-blue-500/50 transition-all text-left group"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
+                              {repo.name}
+                            </h4>
+                            {repo.private && (
+                              <span className="px-2 py-0.5 bg-yellow-500/20 border border-yellow-500/50 rounded text-xs text-yellow-300">
+                                Private
+                              </span>
+                            )}
+                          </div>
+                          {repo.description && (
+                            <p className="text-sm text-slate-400 line-clamp-2 mb-2">
+                              {repo.description}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-3 text-xs text-slate-500">
+                            {repo.language && (
+                              <span className="flex items-center gap-1">
+                                <span className="w-3 h-3 rounded-full bg-blue-500"></span>
+                                {repo.language}
+                              </span>
+                            )}
+                            <span>
+                              Updated {new Date(repo.updated_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <svg className="w-5 h-5 text-slate-600 group-hover:text-blue-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
