@@ -94,7 +94,7 @@ export default function QualityScore({ score }: QualityScoreProps) {
                   <CircularProgress
                     value={score.projected_score ?? 0}
                     max={100}
-                    grade={score.projected_grade}
+                    grade={score.projected_grade ?? "F"}
                     size={140}
                     strokeWidth={10}
                   />
