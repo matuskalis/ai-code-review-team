@@ -95,9 +95,9 @@ interface CodeInputProps {
 
 const CODE_EXAMPLES = [
   {
-    name: "Vulnerable Python (Grade: D-F)",
+    name: "Vulnerable Python Auth",
     language: "python",
-    context: "User authentication function with security flaws",
+    context: "User authentication function with critical security flaws",
     code: `def authenticate_user(username, password):
     # Security issue: SQL injection vulnerability
     query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
@@ -113,9 +113,9 @@ const CODE_EXAMPLES = [
     return users[0] if users else None`,
   },
   {
-    name: "React Component Issues (Grade: C)",
+    name: "React XSS & Performance",
     language: "javascript",
-    context: "React component with performance and security issues",
+    context: "React component with XSS vulnerability and infinite loop",
     code: `import React, { useState, useEffect } from 'react';
 
 function UserProfile({ userId }) {
@@ -129,7 +129,7 @@ function UserProfile({ userId }) {
             .then(data => setUser(data));
     });
 
-    // Security: XSS vulnerability
+    // Security: XSS vulnerability via dangerouslySetInnerHTML
     const renderBio = () => {
         return <div dangerouslySetInnerHTML={{__html: user.bio}} />;
     };
@@ -137,7 +137,6 @@ function UserProfile({ userId }) {
     // Performance: Unnecessary re-renders, no memoization
     const filteredPosts = posts.filter(post => post.userId === userId);
 
-    // Style: Inconsistent error handling
     if (!user) return null;
 
     return (
@@ -150,20 +149,114 @@ function UserProfile({ userId }) {
 }`,
   },
   {
-    name: "TypeScript Async Issues (Grade: B)",
-    language: "typescript",
-    context: "API endpoint handler with async/await issues",
-    code: `import { Request, Response } from 'express';
+    name: "Go Race Condition",
+    language: "go",
+    context: "Concurrent map access without proper synchronization",
+    code: `package main
 
-async function processOrder(req: Request, res: Response) {
+import "fmt"
+
+type Cache struct {
+    data map[string]string
+}
+
+func (c *Cache) Get(key string) string {
+    return c.data[key]
+}
+
+func (c *Cache) Set(key, value string) {
+    // Security: Race condition - concurrent map writes
+    c.data[key] = value
+}
+
+func main() {
+    cache := &Cache{data: make(map[string]string)}
+
+    // Performance: No synchronization for concurrent access
+    for i := 0; i < 100; i++ {
+        go cache.Set(fmt.Sprintf("key%d", i), "value")
+    }
+
+    // Style: Missing proper cleanup and wait
+    fmt.Println(cache.Get("key1"))
+}`,
+  },
+  {
+    name: "Java Memory Leak",
+    language: "java",
+    context: "Event listener causing memory leak",
+    code: `public class DataProcessor {
+    private List<DataListener> listeners = new ArrayList<>();
+    private Map<String, byte[]> cache = new HashMap<>();
+
+    public void addListener(DataListener listener) {
+        // Memory leak: listeners never removed
+        listeners.add(listener);
+    }
+
+    public void processData(String data) {
+        byte[] processed = data.getBytes();
+
+        // Memory leak: unbounded cache growth
+        cache.put(data, processed);
+
+        // Performance: Notifying all listeners synchronously
+        for (DataListener listener : listeners) {
+            listener.onData(processed);
+        }
+    }
+
+    // Style: Missing cleanup method
+    // Security: No input validation
+}`,
+  },
+  {
+    name: "Rust Unsafe Code",
+    language: "rust",
+    context: "Unnecessary unsafe code with potential undefined behavior",
+    code: `use std::ptr;
+
+pub struct Buffer {
+    data: Vec<u8>,
+}
+
+impl Buffer {
+    pub fn new(size: usize) -> Self {
+        Buffer {
+            data: vec![0; size],
+        }
+    }
+
+    pub fn write(&mut self, index: usize, value: u8) {
+        // Security: No bounds checking in unsafe block
+        unsafe {
+            let ptr = self.data.as_mut_ptr();
+            ptr::write(ptr.add(index), value);
+        }
+    }
+
+    pub fn read(&self, index: usize) -> u8 {
+        // Performance: Unnecessary unsafe code
+        unsafe {
+            let ptr = self.data.as_ptr();
+            ptr::read(ptr.add(index))
+        }
+    }
+}`,
+  },
+  {
+    name: "TypeScript Promise Misuse",
+    language: "typescript",
+    context: "Async operations done sequentially instead of parallel",
+    code: `async function processOrder(req: Request, res: Response) {
     const { userId, items } = req.body;
 
-    // Performance: Sequential operations that could be parallel
+    // Performance: Sequential operations that should be parallel
     const user = await getUserById(userId);
     const inventory = await checkInventory(items);
     const pricing = await calculatePricing(items);
 
-    // Missing error handling for async operations
+    // Security: No error handling for failed operations
     const order = {
         user: user,
         items: items,
@@ -173,7 +266,7 @@ async function processOrder(req: Request, res: Response) {
     // Style: No input validation
     await saveOrder(order);
 
-    // Performance: Not using Promise.all for parallel operations
+    // Performance: More sequential operations
     const notification = await sendNotification(user.email);
     const invoice = await generateInvoice(order);
 
@@ -181,16 +274,57 @@ async function processOrder(req: Request, res: Response) {
         success: true,
         orderId: order.id
     });
-}
-
-async function getUserById(id: string) {
-    return await db.query('SELECT * FROM users WHERE id = ?', [id]);
 }`,
   },
   {
-    name: "Clean Python Code (Grade: A)",
+    name: "Python Command Injection",
     language: "python",
-    context: "Well-structured user service with proper error handling",
+    context: "File processor with command injection vulnerability",
+    code: `import os
+import subprocess
+
+def process_file(filename):
+    # Security: Command injection vulnerability
+    result = os.system(f"cat {filename} | grep 'error'")
+
+    # Security: Shell injection via subprocess
+    output = subprocess.check_output(f"wc -l {filename}", shell=True)
+
+    # Performance: Reading entire file into memory
+    with open(filename) as f:
+        lines = f.readlines()
+
+    # Style: No error handling for file operations
+    return len(lines)`,
+  },
+  {
+    name: "JavaScript Prototype Pollution",
+    language: "javascript",
+    context: "Object merging function with prototype pollution risk",
+    code: `function merge(target, source) {
+    // Security: Prototype pollution vulnerability
+    for (let key in source) {
+        if (typeof source[key] === 'object') {
+            target[key] = merge(target[key] || {}, source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}
+
+// Performance: Deep cloning without optimization
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+const userInput = JSON.parse(request.body);
+const settings = merge({}, userInput);`,
+  },
+  {
+    name: "Clean Python Code",
+    language: "python",
+    context: "Well-structured user service with proper patterns",
     code: `from typing import Optional, List
 import logging
 from dataclasses import dataclass
@@ -209,15 +343,7 @@ class UserService:
         self.logger = logging.getLogger(__name__)
 
     def get_user_by_id(self, user_id: int) -> Optional[User]:
-        """
-        Retrieve user by ID with proper error handling.
-
-        Args:
-            user_id: The unique identifier for the user
-
-        Returns:
-            User object if found, None otherwise
-        """
+        """Retrieve user by ID with proper error handling."""
         try:
             # Using parameterized queries to prevent SQL injection
             query = "SELECT id, username, email FROM users WHERE id = ?"
@@ -229,21 +355,7 @@ class UserService:
 
         except Exception as e:
             self.logger.error(f"Error fetching user {user_id}: {e}")
-            return None
-
-    def get_users_with_details(self, user_ids: List[int]) -> List[User]:
-        """Efficiently fetch multiple users using batch query."""
-        try:
-            # Performance: Using IN clause instead of N+1 queries
-            placeholders = ','.join('?' * len(user_ids))
-            query = f"SELECT id, username, email FROM users WHERE id IN ({placeholders})"
-            results = self.db.execute(query, user_ids)
-
-            return [User(**row) for row in results.fetchall()]
-
-        except Exception as e:
-            self.logger.error(f"Error fetching users: {e}")
-            return []`,
+            return None`,
   },
 ];
 
@@ -302,8 +414,9 @@ export default function CodeInput({
   };
 
   const shuffleExample = () => {
-    const nextIndex = (currentExampleIndex + 1) % CODE_EXAMPLES.length;
-    loadExample(nextIndex);
+    // Pick a truly random example
+    const randomIndex = Math.floor(Math.random() * CODE_EXAMPLES.length);
+    loadExample(randomIndex);
   };
 
   const handleSubmit = async () => {
@@ -445,38 +558,22 @@ export default function CodeInput({
           </div>
         </div>
 
-        {/* Example selector - moved below code input */}
+        {/* Random Example Button */}
         <div>
-          <label className="block text-sm font-bold text-white mb-3">
-            Quick Start Examples
-          </label>
-          <div className="flex gap-2 flex-wrap mb-3">
-            {CODE_EXAMPLES.map((example, index) => (
-              <button
-                key={index}
-                onClick={() => loadExample(index)}
-                disabled={isReviewing}
-                className={`px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 ${
-                  currentExampleIndex === index && code
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "bg-slate-700/40 text-slate-300 hover:bg-slate-600/60 border border-slate-600/50"
-                } disabled:opacity-50`}
-              >
-                {example.name}
-              </button>
-            ))}
-          </div>
           <button
             onClick={shuffleExample}
             disabled={isReviewing}
-            className="w-full px-4 py-2.5 bg-slate-700/40 hover:bg-slate-600/60 disabled:bg-slate-800 text-slate-300 text-sm font-medium rounded-lg transition-all duration-200 border border-slate-600/50 flex items-center justify-center gap-2"
-            title="Load next example"
+            className="w-full px-6 py-4 bg-gradient-to-r from-slate-700/60 to-slate-600/60 hover:from-slate-600/80 hover:to-slate-500/80 disabled:from-slate-800 disabled:to-slate-800 text-white font-semibold rounded-xl transition-all duration-200 border border-slate-600/50 hover:border-slate-500 disabled:opacity-50 flex items-center justify-center gap-3 group"
+            title="Load a random code example"
           >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="currentColor" viewBox="0 0 20 20">
               <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z" />
             </svg>
-            <span>Shuffle Random Example</span>
+            <span>Load Random Example Code</span>
           </button>
+          <p className="text-xs text-slate-500 text-center mt-2">
+            {CODE_EXAMPLES.length} examples • Python, JavaScript, TypeScript, Go, Rust, Java
+          </p>
         </div>
 
         {/* Action Buttons */}
