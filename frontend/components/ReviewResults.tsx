@@ -2,10 +2,12 @@
 
 import { CodeReviewResponse, ReviewIssue } from "@/lib/types";
 import { useState, useMemo } from "react";
+import { Filter } from "lucide-react";
 import QualityScore from "./QualityScore";
 import FilterBar from "./FilterBar";
 import SummaryMetrics from "./SummaryMetrics";
 import IssuesTable from "./IssuesTable";
+import BottomSheet from "./BottomSheet";
 
 interface ReviewResultsProps {
   result: CodeReviewResponse;
@@ -144,9 +146,15 @@ export default function ReviewResults({
     style: false,
   });
 
-  // View mode toggle: table or cards
-  const [viewMode, setViewMode] = useState<"table" | "cards">("table");
+  // View mode toggle: default to cards on mobile, table on desktop
+  const [viewMode, setViewMode] = useState<"table" | "cards">(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768 ? "cards" : "table";
+    }
+    return "table";
+  });
   const [sortBy, setSortBy] = useState<"severity" | "impact" | "line">("severity");
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   // Load filter from localStorage on mount
   const [selectedFilter, setSelectedFilter] = useState(() => {
@@ -387,58 +395,136 @@ export default function ReviewResults({
           </div>
         </div>
 
-        {/* Filter Bar + View Toggle */}
+        {/* Filter Bar + View Toggle - Sticky on Mobile */}
         {result.unique_issues && result.unique_issues.length > 0 && (
-          <div className="flex items-center justify-between gap-4 mb-6">
-            <div className="flex-1">
-              <FilterBar
-                selectedFilter={selectedFilter}
-                onFilterChange={handleFilterChange}
-                issueCounts={issueCounts}
-              />
+          <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-sm pb-4 mb-6 -mx-4 px-4 md:mx-0 md:px-0 md:static md:bg-transparent md:backdrop-blur-none">
+            {/* Mobile Filter Button */}
+            <div className="md:hidden flex items-center gap-2 mb-3">
+              <button
+                onClick={() => setShowMobileFilters(true)}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors active:scale-95 min-h-[44px]"
+              >
+                <Filter className="w-5 h-5" />
+                <span className="font-semibold">
+                  Filters {selectedFilter !== "all" ? `(${selectedFilter})` : ""}
+                </span>
+              </button>
+
+              {/* View Mode Toggle - Mobile */}
+              <div className="flex items-center gap-1 glass-card rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode("cards")}
+                  className={`p-2 rounded transition-colors active:scale-95 ${
+                    viewMode === "cards"
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                  aria-label="Card view"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM11 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM11 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`p-2 rounded transition-colors active:scale-95 ${
+                    viewMode === "table"
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                  aria-label="Table view"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2">
-              <label className="text-xs text-slate-400 font-medium">Sort by:</label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "severity" | "impact" | "line")}
-                className="px-3 py-1.5 bg-slate-800/80 text-slate-300 text-xs font-medium rounded-lg border border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-              >
-                <option value="severity">Severity</option>
-                <option value="impact">High Impact</option>
-                <option value="line">Line Number</option>
-              </select>
+            {/* Desktop Filter Bar */}
+            <div className="hidden md:flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <FilterBar
+                  selectedFilter={selectedFilter}
+                  onFilterChange={handleFilterChange}
+                  issueCounts={issueCounts}
+                />
+              </div>
+
+              {/* Sort Dropdown */}
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-slate-400 font-medium">Sort by:</label>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as "severity" | "impact" | "line")}
+                  className="px-3 py-1.5 bg-slate-800/80 text-slate-300 text-xs font-medium rounded-lg border border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                >
+                  <option value="severity">Severity</option>
+                  <option value="impact">High Impact</option>
+                  <option value="line">Line Number</option>
+                </select>
+              </div>
+
+              {/* View Mode Toggle - Desktop */}
+              <div className="flex items-center gap-2 glass-card rounded-lg p-1">
+                <button
+                  onClick={() => setViewMode("table")}
+                  className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
+                    viewMode === "table"
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setViewMode("cards")}
+                  className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
+                    viewMode === "cards"
+                      ? "bg-blue-600 text-white"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM11 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM11 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            {/* View Mode Toggle */}
-            <div className="flex items-center gap-2 glass-card rounded-lg p-1">
-              <button
-                onClick={() => setViewMode("table")}
-                className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-                  viewMode === "table"
-                    ? "bg-blue-600 text-white"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setViewMode("cards")}
-                className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors ${
-                  viewMode === "cards"
-                    ? "bg-blue-600 text-white"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4zM11 4a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V4zM11 12a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                </svg>
-              </button>
-            </div>
+            {/* Mobile Bottom Sheet for Filters */}
+            <BottomSheet
+              isOpen={showMobileFilters}
+              onClose={() => setShowMobileFilters(false)}
+              title="Filter Issues"
+            >
+              <div className="space-y-4">
+                <FilterBar
+                  selectedFilter={selectedFilter}
+                  onFilterChange={(filter) => {
+                    handleFilterChange(filter);
+                    setShowMobileFilters(false);
+                  }}
+                  issueCounts={issueCounts}
+                />
+
+                {/* Sort Option in Mobile Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-white mb-2">Sort by</label>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as "severity" | "impact" | "line")}
+                    className="w-full px-4 py-3 bg-slate-800 text-white rounded-lg border border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all min-h-[44px]"
+                  >
+                    <option value="severity">Severity (High to Low)</option>
+                    <option value="impact">High Impact First</option>
+                    <option value="line">Line Number</option>
+                  </select>
+                </div>
+              </div>
+            </BottomSheet>
           </div>
         )}
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import CodeInput from "@/components/CodeInput";
 import AgentPanel from "@/components/AgentPanel";
 import ReviewResults from "@/components/ReviewResults";
+import MobileNav from "@/components/MobileNav";
 import { CodeReviewResponse } from "@/lib/types";
 
 export default function Home() {
@@ -164,22 +165,17 @@ export default function Home() {
 
       <div className="relative z-10 container mx-auto px-4 py-4 max-w-7xl">
         {/* Top Navigation */}
-        <nav className="flex items-center justify-between mb-8 py-4">
+        <div className="flex items-center justify-between mb-8 py-4">
           <div className="flex items-center gap-2">
             <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
             </svg>
             <span className="text-xl font-bold text-white">AskNim</span>
           </div>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">Docs</a>
-            <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">API</a>
-            <a href="#" className="text-sm text-slate-400 hover:text-white transition-colors">Pricing</a>
-            <a href="#teams" className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-semibold rounded-lg transition-all duration-200 shadow-lg">
-              For Teams
-            </a>
-          </div>
-        </nav>
+
+          {/* Desktop Navigation & Mobile Menu */}
+          <MobileNav />
+        </div>
 
         {/* Hero Section - Market-Dominant */}
         <header className="mb-20 relative">
@@ -935,13 +931,14 @@ jobs:
           </div>
         </footer>
 
-        {/* Floating CTA Button */}
+        {/* Floating CTA Button - Mobile Optimized */}
         {showFloatingCTA && (
           <button
             onClick={handleTryDemo}
-            className="fixed bottom-8 right-8 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold rounded-full transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 transform hover:scale-110 flex items-center gap-3 z-50 animate-pulse-glow"
+            className="fixed bottom-4 right-4 md:bottom-8 md:right-8 min-w-[56px] min-h-[56px] md:min-w-0 md:min-h-0 px-4 md:px-6 py-3 md:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 active:scale-95 text-white font-bold rounded-full transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 md:transform md:hover:scale-110 flex items-center justify-center gap-3 z-40 animate-pulse-glow"
+            aria-label="Run code review"
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
             </svg>
             <span className="hidden md:inline">Run Review</span>

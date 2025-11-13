@@ -68,8 +68,10 @@ export default function IssuesTable({ issues }: IssuesTableProps) {
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-700/50">
-      <table className="w-full">
+    <div className="overflow-x-auto -mx-4 md:mx-0">
+      <div className="inline-block min-w-full align-middle px-4 md:px-0">
+        <div className="overflow-hidden rounded-xl border border-slate-700/50">
+          <table className="w-full min-w-[640px]">
         {/* Table Header */}
         <thead className="bg-slate-800/50 border-b border-slate-700/50">
           <tr>
@@ -271,16 +273,18 @@ export default function IssuesTable({ issues }: IssuesTableProps) {
             );
           })}
         </tbody>
-      </table>
+          </table>
 
-      {issues.length === 0 && (
-        <div className="text-center py-12 text-slate-400">
-          <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
-          <p>No issues found in this category</p>
+          {issues.length === 0 && (
+            <div className="text-center py-12 text-slate-400">
+              <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <p>No issues found in this category</p>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

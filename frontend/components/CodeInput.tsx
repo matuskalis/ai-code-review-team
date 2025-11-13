@@ -523,46 +523,93 @@ export default function CodeInput({
 
     onReviewStart();
 
-    try {
-      // Connect to WebSocket
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "ws://localhost:8000";
-      const ws = new WebSocket(`${backendUrl}/ws/review`);
+    let ws: WebSocket | null = null;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 3;
+    let reconnectTimeout: NodeJS.Timeout;
+    let isReconnecting = false;
+    let hasCompleted = false;
 
-      ws.onopen = () => {
-        // Send review request
-        ws.send(JSON.stringify({
-          code,
-          language,
-          context: context || undefined,
-        }));
-      };
+    const connectWebSocket = () => {
+      try {
+        // Connect to WebSocket
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "ws://localhost:8000";
+        ws = new WebSocket(`${backendUrl}/ws/review`);
 
-      ws.onmessage = (event) => {
-        const message: WebSocketMessage = JSON.parse(event.data);
+        ws.onopen = () => {
+          console.log("WebSocket connected");
+          reconnectAttempts = 0;
+          isReconnecting = false;
 
-        if (message.type === "status" && message.agent && message.message) {
-          onAgentUpdate(message.agent, message.message);
-        } else if (message.type === "complete" && message.data) {
-          onReviewComplete(message.data);
-          ws.close();
-        } else if (message.type === "error") {
-          alert(`Error: ${message.message}`);
-          ws.close();
-        }
-      };
+          // Send review request
+          if (ws) {
+            ws.send(JSON.stringify({
+              code,
+              language,
+              context: context || undefined,
+            }));
+          }
+        };
 
-      ws.onerror = (error) => {
-        console.error("WebSocket error:", error);
-        alert("Failed to connect to review service. Make sure the backend is running.");
-      };
+        ws.onmessage = (event) => {
+          const message: WebSocketMessage = JSON.parse(event.data);
 
-      ws.onclose = () => {
-        console.log("WebSocket connection closed");
-      };
-    } catch (error) {
-      console.error("Error starting review:", error);
-      alert("Failed to start review");
-    }
+          if (message.type === "status" && message.agent && message.message) {
+            onAgentUpdate(message.agent, message.message);
+          } else if (message.type === "complete" && message.data) {
+            hasCompleted = true;
+            onReviewComplete(message.data);
+            ws?.close();
+          } else if (message.type === "error") {
+            alert(`Error: ${message.message}`);
+            ws?.close();
+          }
+        };
+
+        ws.onerror = (error) => {
+          console.error("WebSocket error:", error);
+          if (!hasCompleted && !isReconnecting) {
+            alert("Connection error. Attempting to reconnect...");
+          }
+        };
+
+        ws.onclose = (event) => {
+          console.log("WebSocket connection closed", event.code, event.reason);
+
+          // Don't reconnect if review completed successfully or user closed
+          if (hasCompleted || event.code === 1000) {
+            return;
+          }
+
+          // Attempt reconnection with exponential backoff
+          if (reconnectAttempts < maxReconnectAttempts && !hasCompleted) {
+            isReconnecting = true;
+            const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
+            reconnectAttempts++;
+
+            console.log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts}) in ${delay}ms...`);
+
+            reconnectTimeout = setTimeout(() => {
+              connectWebSocket();
+            }, delay);
+          } else if (!hasCompleted) {
+            alert("Failed to connect to review service. Please try again or check if the backend is running.");
+          }
+        };
+      } catch (error) {
+        console.error("Error starting review:", error);
+        alert("Failed to start review");
+      }
+    };
+
+    // Initial connection
+    connectWebSocket();
+
+    // Cleanup function (if component unmounts)
+    return () => {
+      clearTimeout(reconnectTimeout);
+      ws?.close(1000, "Component unmounted");
+    };
   };
 
   return (

@@ -1,11 +1,23 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "CodeReview AI – Automated Multi-Agent Code Review",
   description: "Automated AI code review with CWE detection, Big-O analysis, and maintainability scoring in under 30 seconds. Used in 10,000+ reviews with 4.8/5 quality score.",
   keywords: ["ai code review", "code analysis", "security audit", "performance optimization", "code quality", "static analysis", "vulnerability detection", "automated code review"],
   authors: [{ name: "AI Code Review Team" }],
+  manifest: "/manifest.json",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#020617" },
+    { media: "(prefers-color-scheme: light)", color: "#020617" },
+  ],
   openGraph: {
     title: "AI Code Review Team – Automated Multi-Agent Code Analysis",
     description: "Get comprehensive code reviews in 30 seconds with specialized AI agents for security, performance, and style.",
@@ -34,6 +46,11 @@ export const metadata: Metadata = {
     // google: 'your-google-verification-code',
     // yandex: 'your-yandex-verification-code',
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "AskNim AI Review",
+  },
 };
 
 export default function RootLayout({
@@ -44,7 +61,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
       </body>
     </html>
   );
