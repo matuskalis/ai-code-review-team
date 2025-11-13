@@ -203,14 +203,28 @@ class ReviewOrchestrator:
         # Count issues by severity
         issues_by_severity = {"critical": 0, "high": 0, "medium": 0, "low": 0, "info": 0}
 
+        # Get agent reviews by type for status checking
+        agent_review_map = {review.agent_type.value: review for review in agent_reviews}
+
         # Calculate per-agent scores
         def calculate_agent_score(agent_type: str) -> float:
+            """
+            Calculate score for a specific agent type.
+            Returns 0 if agent failed, 100 if no issues found, or calculated score based on issues.
+            """
+            # Check if agent completed successfully
+            agent_review = agent_review_map.get(agent_type)
+            if agent_review and agent_review.status != AgentStatus.COMPLETED:
+                # Agent failed - return 0 score (worst possible)
+                return 0.0
+
             agent_issues = [
                 issue for issue in unique_issues
                 if agent_type in [a.lower() for a in issue.found_by]
             ]
 
             if not agent_issues:
+                # Agent ran successfully and found no issues
                 return 100.0
 
             # Count issues by severity for this agent
@@ -253,6 +267,16 @@ class ReviewOrchestrator:
 
         # Calculate projected score (if critical/high issues are fixed)
         def calculate_projected_score(agent_type: str) -> float:
+            """
+            Calculate projected score if critical/high issues are fixed.
+            Returns 0 if agent failed, 100 if no remaining issues.
+            """
+            # Check if agent completed successfully
+            agent_review = agent_review_map.get(agent_type)
+            if agent_review and agent_review.status != AgentStatus.COMPLETED:
+                # Agent failed - return 0 score
+                return 0.0
+
             agent_issues = [
                 issue for issue in unique_issues
                 if agent_type in [a.lower() for a in issue.found_by]

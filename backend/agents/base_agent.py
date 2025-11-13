@@ -4,7 +4,7 @@ import openai
 from openai import APIError, RateLimitError, APIConnectionError
 import os
 from models.review import AgentReview, ReviewIssue, AgentType, AgentStatus
-from config import Config
+from config import config
 import json
 
 
@@ -14,10 +14,10 @@ class BaseAgent(ABC):
     def __init__(self, agent_type: AgentType):
         self.agent_type = agent_type
         self.client = openai.AsyncOpenAI(
-            api_key=Config.OPENAI_API_KEY,
-            timeout=Config.API_TIMEOUT
+            api_key=config.OPENAI_API_KEY,
+            timeout=config.API_TIMEOUT
         )
-        self.models_to_try = Config.get_available_models()
+        self.models_to_try = config.get_available_models()
 
     @abstractmethod
     def get_system_prompt(self) -> str:
@@ -39,18 +39,18 @@ class BaseAgent(ABC):
         last_error = None
 
         for model in self.models_to_try:
-            for attempt in range(Config.MAX_RETRIES):
+            for attempt in range(config.MAX_RETRIES):
                 try:
                     if status_callback and attempt > 0:
                         await status_callback(
                             self.get_agent_name(),
-                            f"Retrying with {model} (attempt {attempt + 1}/{Config.MAX_RETRIES})..."
+                            f"Retrying with {model} (attempt {attempt + 1}/{config.MAX_RETRIES})..."
                         )
 
                     response = await self.client.chat.completions.create(
                         model=model,
                         messages=messages,
-                        temperature=Config.TEMPERATURE,
+                        temperature=config.TEMPERATURE,
                         response_format={"type": "json_object"}
                     )
 
@@ -64,7 +64,7 @@ class BaseAgent(ABC):
 
                 except APIConnectionError as e:
                     last_error = f"Connection error: {str(e)}"
-                    if attempt < Config.MAX_RETRIES - 1:
+                    if attempt < config.MAX_RETRIES - 1:
                         continue  # Retry same model
 
                 except APIError as e:
@@ -81,12 +81,12 @@ class BaseAgent(ABC):
                         break
 
                     # For other API errors, retry
-                    if attempt < Config.MAX_RETRIES - 1:
+                    if attempt < config.MAX_RETRIES - 1:
                         continue
 
                 except Exception as e:
                     last_error = f"Unexpected error: {str(e)}"
-                    if attempt < Config.MAX_RETRIES - 1:
+                    if attempt < config.MAX_RETRIES - 1:
                         continue
 
         # All attempts failed

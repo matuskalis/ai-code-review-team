@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from models.review import CodeReviewRequest, CodeReviewResponse
 from agents.orchestrator import ReviewOrchestrator
 from rate_limiter import rate_limiter
@@ -16,6 +17,9 @@ if not os.getenv("OPENAI_API_KEY"):
     raise ValueError("OPENAI_API_KEY environment variable is required")
 
 app = FastAPI(title="AI Code Review Team", version="1.0.0")
+
+# GZip compression middleware (add first for better performance)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # CORS middleware for frontend
 app.add_middleware(
@@ -79,25 +83,25 @@ async def review_code(code_request: CodeReviewRequest, request: Request):
     Free tier: 5 reviews per day per IP address
     Premium: Use X-Admin-Password header to bypass rate limit
     """
-    from config import Config
+    from config import config
 
     # Check for admin password (bypass rate limiting)
     admin_password = request.headers.get("X-Admin-Password")
-    is_admin = admin_password == Config.ADMIN_PASSWORD
+    is_admin = admin_password == config.ADMIN_PASSWORD
 
     if not is_admin:
         # Check rate limit for non-admin users
         client_ip = get_client_ip(request)
-        allowed, used, remaining = rate_limiter.check_rate_limit(client_ip)
+        allowed, used, remaining, reason = rate_limiter.check_rate_limit(client_ip)
 
         if not allowed:
             raise HTTPException(
                 status_code=429,
                 detail={
                     "error": "Rate limit exceeded",
-                    "message": "You've reached your daily limit of 5 free reviews. Resets at midnight UTC.",
+                    "message": reason or "You've reached your daily limit of 5 free reviews. Resets at midnight UTC.",
                     "reviews_used": used,
-                    "reviews_remaining": 0,
+                    "reviews_remaining": remaining,
                     "upgrade_url": "/contact"
                 }
             )
@@ -191,23 +195,18 @@ async def contact_form(contact: ContactRequest):
 @app.get("/rate-limit-status")
 async def rate_limit_status(request: Request):
     """
-    Check rate limit status for current IP
+    Check rate limit status for current IP (does not increment counter)
     """
     client_ip = get_client_ip(request)
-    allowed, used, remaining = rate_limiter.check_rate_limit(client_ip)
-
-    # Undo the increment from the check (since this is just a status query)
-    if allowed and used > 0:
-        rate_limiter.request_counts[client_ip] = (
-            used - 1,
-            rate_limiter.request_counts[client_ip][1]
-        )
+    status = rate_limiter.get_status(client_ip)
 
     return {
-        "reviews_used": max(0, used - 1) if allowed else used,
-        "reviews_remaining": remaining + 1 if allowed else 0,
-        "max_reviews_per_day": rate_limiter.max_requests_per_day,
-        "reset_time": "midnight UTC"
+        "reviews_used": status["requests_today"],
+        "reviews_remaining": status["requests_remaining_today"],
+        "requests_last_hour": status["requests_last_hour"],
+        "max_reviews_per_day": status["daily_limit"],
+        "max_reviews_per_hour": status["hourly_limit"],
+        "reset_time": status["reset_time"]
     }
 
 
