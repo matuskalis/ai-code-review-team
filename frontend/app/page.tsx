@@ -178,7 +178,7 @@ export default function Home() {
         </div>
 
         {/* Hero Section - Market-Dominant */}
-        <header className="mb-20 relative">
+        <header className="mb-12 md:mb-20 relative">
           {/* Animated Gradient Background */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -187,35 +187,36 @@ export default function Home() {
 
           {/* Main Headline */}
           <div className="text-center mb-6 relative z-10">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-3 md:mb-4 leading-tight tracking-tight px-2">
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Meet Nim: Your AI Code Review Team Leader
               </span>
               <br />
-              <span className="text-2xl md:text-4xl text-slate-300">Leading expert agents for Security & Performance</span>
+              <span className="text-xl sm:text-2xl md:text-4xl text-slate-300">Leading expert agents for Security & Performance</span>
             </h1>
 
             {/* Tagline */}
-            <p className="text-lg md:text-xl text-slate-400 mb-8 font-medium">
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-6 md:mb-8 font-medium px-4">
               Nim orchestrates specialized AI agents to find what you miss.
             </p>
 
             {/* Primary CTA */}
-            <div className="mb-6">
+            <div className="mb-6 px-4">
               <button
                 onClick={handleTryDemo}
-                className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-lg font-bold rounded-xl transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 transform hover:scale-105 inline-flex items-center gap-3 animate-pulse-glow"
+                className="px-6 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-base sm:text-lg font-bold rounded-xl transition-all duration-300 shadow-2xl hover:shadow-blue-500/50 transform hover:scale-105 inline-flex items-center gap-2 sm:gap-3 animate-pulse-glow"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                 </svg>
-                <span>Try Demo with Vulnerable Code</span>
+                <span className="hidden sm:inline">Try Demo with Vulnerable Code</span>
+                <span className="sm:hidden">Try Demo Now</span>
               </button>
               <p className="text-xs text-slate-500 mt-3">No signup • Free instant review</p>
             </div>
 
             {/* Compact Stats Bar */}
-            <div className="inline-flex items-center gap-4 px-6 py-3 bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-full">
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-full max-w-full">
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -246,124 +247,120 @@ export default function Home() {
             </div>
 
             {/* Feature Highlights */}
-            <div className="flex items-center justify-center gap-8 text-sm text-slate-400 mb-6">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 md:gap-8 text-xs sm:text-sm text-slate-400 mb-6 px-4">
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>CWE-tagged vulnerabilities</span>
+                <span className="whitespace-nowrap">CWE-tagged vulnerabilities</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Big O complexity analysis</span>
+                <span className="whitespace-nowrap">Big O complexity analysis</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>Production-ready fixes</span>
+                <span className="whitespace-nowrap">Production-ready fixes</span>
               </div>
             </div>
           </div>
 
           {/* Technical Differentiation Section */}
-          <div className="max-w-5xl mx-auto mt-16 mb-12">
-            <div className="glass-card rounded-2xl p-8 border border-slate-700/50">
-              <h3 className="text-center text-xl font-bold text-white mb-6">Nim's Multi-Agent Orchestration</h3>
+          <div className="max-w-5xl mx-auto mt-12 md:mt-16 mb-8 md:mb-12">
+            <div className="glass-card rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-700/50">
+              <h3 className="text-center text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">Nim's Multi-Agent Orchestration</h3>
 
               {/* Agent Flow Diagram */}
-              <div className="flex items-center justify-center gap-4 mb-6 overflow-x-auto">
+              <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 overflow-x-auto pb-2 px-2 -mx-2">
                 {/* Code Input */}
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <div className="w-16 h-16 rounded-xl bg-slate-700/50 border-2 border-slate-600 flex items-center justify-center mb-2">
-                    <svg className="w-8 h-8 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col items-center min-w-[70px] sm:min-w-[90px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-slate-700/50 border-2 border-slate-600 flex items-center justify-center mb-1 sm:mb-2">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <span className="text-xs text-slate-400 font-medium">Your Code</span>
+                  <span className="text-[10px] sm:text-xs text-slate-400 font-medium text-center">Your Code</span>
                 </div>
 
                 {/* Arrow */}
-                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
 
                 {/* Security Agent */}
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <div className="w-16 h-16 rounded-xl bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mb-2">
-                    <svg className="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col items-center min-w-[70px] sm:min-w-[90px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mb-1 sm:mb-2">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <span className="text-xs text-red-400 font-medium">Security</span>
+                  <span className="text-[10px] sm:text-xs text-red-400 font-medium text-center">Security</span>
                 </div>
 
-                {/* Arrow */}
-                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
 
                 {/* Performance Agent */}
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <div className="w-16 h-16 rounded-xl bg-yellow-900/20 border-2 border-yellow-500/50 flex items-center justify-center mb-2">
-                    <svg className="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col items-center min-w-[70px] sm:min-w-[90px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-yellow-900/20 border-2 border-yellow-500/50 flex items-center justify-center mb-1 sm:mb-2">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <span className="text-xs text-yellow-400 font-medium">Performance</span>
+                  <span className="text-[10px] sm:text-xs text-yellow-400 font-medium text-center">Performance</span>
                 </div>
 
-                {/* Arrow */}
-                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
 
                 {/* Style Agent */}
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <div className="w-16 h-16 rounded-xl bg-blue-900/20 border-2 border-blue-500/50 flex items-center justify-center mb-2">
-                    <svg className="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col items-center min-w-[70px] sm:min-w-[90px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-blue-900/20 border-2 border-blue-500/50 flex items-center justify-center mb-1 sm:mb-2">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   </div>
-                  <span className="text-xs text-blue-400 font-medium">Style</span>
+                  <span className="text-[10px] sm:text-xs text-blue-400 font-medium text-center">Style</span>
                 </div>
 
-                {/* Arrow */}
-                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
 
                 {/* Orchestrator */}
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <div className="w-16 h-16 rounded-xl bg-purple-900/20 border-2 border-purple-500/50 flex items-center justify-center mb-2">
-                    <svg className="w-8 h-8 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col items-center min-w-[70px] sm:min-w-[90px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-purple-900/20 border-2 border-purple-500/50 flex items-center justify-center mb-1 sm:mb-2">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
                     </svg>
                   </div>
-                  <span className="text-xs text-purple-400 font-medium">Nim (Leader)</span>
+                  <span className="text-[10px] sm:text-xs text-purple-400 font-medium text-center">Nim</span>
                 </div>
 
-                {/* Arrow */}
-                <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
 
                 {/* Report */}
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <div className="w-16 h-16 rounded-xl bg-green-900/20 border-2 border-green-500/50 flex items-center justify-center mb-2">
-                    <svg className="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex flex-col items-center min-w-[70px] sm:min-w-[90px]">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl bg-green-900/20 border-2 border-green-500/50 flex items-center justify-center mb-1 sm:mb-2">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                       <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                   </div>
-                  <span className="text-xs text-green-400 font-medium">Report</span>
+                  <span className="text-[10px] sm:text-xs text-green-400 font-medium text-center">Report</span>
                 </div>
               </div>
 
               {/* Differentiator Text */}
-              <p className="text-center text-sm text-slate-400 leading-relaxed max-w-3xl mx-auto">
+              <p className="text-center text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl mx-auto px-2">
                 Nim coordinates specialized agents, each focused on security, performance, or style, catching issues that single tools miss.
               </p>
             </div>
@@ -371,10 +368,10 @@ export default function Home() {
         </header>
 
         {/* Used By Teams Strip */}
-        <div className="max-w-5xl mx-auto mb-16">
-          <div className="text-center mb-8">
-            <p className="text-sm text-slate-500 uppercase tracking-wider mb-6">Used by teams at</p>
-            <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+        <div className="max-w-5xl mx-auto mb-12 md:mb-16">
+          <div className="text-center mb-6 md:mb-8">
+            <p className="text-xs sm:text-sm text-slate-500 uppercase tracking-wider mb-4 sm:mb-6">Used by teams at</p>
+            <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8 lg:gap-12 px-4">
               {/* Generic logo silhouettes */}
               <div className="w-32 h-12 bg-slate-800/30 rounded-lg border border-slate-700/50 flex items-center justify-center">
                 <div className="text-slate-600 font-bold text-sm">TECH CO</div>
@@ -396,27 +393,27 @@ export default function Home() {
         </div>
 
         {/* Comparison Table Section */}
-        <div className="max-w-5xl mx-auto mb-16">
-          <div className="glass-card rounded-2xl p-8 border border-slate-700/50">
-            <h3 className="text-center text-xl font-bold text-white mb-2">
+        <div className="max-w-5xl mx-auto mb-12 md:mb-16">
+          <div className="glass-card rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-700/50">
+            <h3 className="text-center text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">
               Why Choose Nim's Multi-Agent Review?
             </h3>
-            <p className="text-center text-sm text-slate-400 mb-8">
+            <p className="text-center text-xs sm:text-sm text-slate-400 mb-6 sm:mb-8 px-2">
               Nim leads specialized AI agents that collaborate to catch what single tools miss
             </p>
 
             {/* Comparison Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+              <table className="w-full min-w-[500px]">
                 <thead>
                   <tr className="border-b border-slate-700">
-                    <th className="text-left py-4 px-4 text-sm font-bold text-slate-300 uppercase tracking-wider">
+                    <th className="text-left py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-wider">
                       Capability
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-bold text-blue-400 uppercase tracking-wider">
+                    <th className="text-center py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm font-bold text-blue-400 uppercase tracking-wider">
                       AskNim
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-bold text-slate-500 uppercase tracking-wider">
+                    <th className="text-center py-3 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm font-bold text-slate-500 uppercase tracking-wider">
                       Static Analyzers
                     </th>
                   </tr>
