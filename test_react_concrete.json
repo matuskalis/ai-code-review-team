@@ -1,0 +1,5 @@
+{
+  "code": "import React, { useState, useEffect } from 'react';\n\nfunction UserProfile({ userId }) {\n  const [user, setUser] = useState(null);\n  const [posts, setPosts] = useState([]);\n\n  useEffect(() => {\n    fetch(`/api/users/${userId}`)\n      .then(res => res.json())\n      .then(data => setUser(data));\n\n    fetch(`/api/users/${userId}/posts`)\n      .then(res => res.json())\n      .then(data => setPosts(data));\n  });\n\n  const filteredPosts = posts.filter(post => post.userId === userId);\n\n  const renderBio = () => {\n    return <div dangerouslySetInnerHTML={{ __html: user.bio }} />;\n  };\n\n  if (!user) return <div>Loading...</div>;\n\n  return (\n    <div>\n      <h1>{user.name}</h1>\n      {renderBio()}\n      <div>\n        {filteredPosts.map(post => (\n          <div key={post.id}>{post.title}</div>\n        ))}\n      </div>\n    </div>\n  );\n}",
+  "language": "javascript",
+  "context": "React component for user profile display"
+}

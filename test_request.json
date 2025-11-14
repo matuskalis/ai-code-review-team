@@ -1,0 +1,5 @@
+{
+  "code": "def get_user_data(user_id):\n    query = f\"SELECT * FROM users WHERE id = {user_id}\"\n    return db.execute(query).fetchone()\n\ndef get_all_user_posts(user_ids):\n    results = []\n    for user_id in user_ids:\n        posts = db.execute(f\"SELECT * FROM posts WHERE user_id = {user_id}\").fetchall()\n        results.append(posts)\n    return results\n\ndef complex_validation(data):\n    if data:\n        if data.get('type') == 'user':\n            if data.get('status') == 'active':\n                if data.get('verified'):\n                    if data.get('role') == 'admin':\n                        return True\n                    else:\n                        return False\n                else:\n                    return False\n            else:\n                return False\n        else:\n            return False\n    else:\n        return False\n\ndef process_payment(amount, card_number):\n    charge = stripe.charge(amount, card_number)\n    return charge.id",
+  "language": "python",
+  "context": "User authentication and payment processing functions"
+}

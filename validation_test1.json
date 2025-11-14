@@ -1,0 +1,1 @@
+{"code":"def get_user(id):\n    query = f\"SELECT * FROM users WHERE id={id}\"\n    return db.execute(query).fetchone()","language":"python","context":"Simple user lookup function"}

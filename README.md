@@ -10,7 +10,9 @@
 
 **Enterprise-grade automated code review with specialized AI agents for security, performance, and maintainability analysis.**
 
-[Live Demo](#demo) • [Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [API](#api)
+[Live Demo](#demo) • [Features](#features) • [Quick Start](#quick-start) • [📚 Full Documentation](./TECHNICAL_DOCUMENTATION.md) • [API](#api)
+
+📖 **New to the project?** Read the [Complete Technical Documentation](./TECHNICAL_DOCUMENTATION.md) for architecture, API reference, and deployment guides.
 
 </div>
 
@@ -34,6 +36,32 @@ CodeReview AI is an automated multi-agent code review system that analyzes your 
 - **4.8/5** average quality score
 - **+37%** average performance improvement
 - **~25s** average review time
+
+---
+
+## 💎 Pricing
+
+### Free Tier (Beta)
+**Perfect for individual developers and testing**
+
+- ✅ **5 reviews per day** (resets at midnight UTC)
+- ✅ All 3 specialized agents (Security, Performance, Style)
+- ✅ Real-time WebSocket updates
+- ✅ Full code quality scoring
+- ✅ CWE tagging & Big-O analysis
+- ⏱️ Results available for 24 hours
+
+### Premium Tier
+**Custom AI agents built for your tech stack**
+
+- ✨ **Unlimited reviews**
+- ✨ **Custom agents** tailored to your frameworks and patterns
+- ✨ **GitHub PR integration**
+- ✨ **Team collaboration features**
+- ✨ **Review history & analytics**
+- ✨ **Priority support**
+
+📧 **Interested in Premium?** [Contact us](#contact--support) to discuss custom agents for your team's needs.
 
 ---
 
@@ -122,7 +150,22 @@ Visit \`http://localhost:3000\` to access the application.
 
 ## 📖 Documentation
 
-### Architecture
+### Quick Links
+
+- **[📚 Complete Technical Documentation](./TECHNICAL_DOCUMENTATION.md)** - Everything you need to know
+  - Architecture deep dive
+  - Complete API reference
+  - Multi-agent system explained
+  - Rate limiting & access control
+  - Deployment guides
+  - Troubleshooting
+  - Cost analysis
+
+- **[🚀 Ship Ready Guide](./SHIP_READY.md)** - Launch checklist and next steps
+
+- **[✅ Validation Report](./VALIDATION_REPORT.md)** - Test results and quality metrics
+
+### Quick Architecture Overview
 
 \`\`\`
 ┌─────────────┐
@@ -241,11 +284,13 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 }
 \`\`\`
 
-### REST API (Coming Soon)
+### REST API
 
-- \`POST /api/review\` - Submit code for review
-- \`GET /api/review/{id}\` - Retrieve review results
-- \`GET /api/history\` - Get review history
+**POST /review** - Submit code for synchronous review (Rate limited: 5/day)
+
+**GET /rate-limit-status** - Check current usage
+
+**POST /contact** - Contact form for premium tier inquiries
 
 ---
 
